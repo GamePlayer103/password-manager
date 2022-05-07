@@ -61,6 +61,21 @@ def add_password():
     c.execute(sql, data)
     conn.commit()
 
+def print_passwords():
+    conn = create_connection(DB_PATH)
+    c = conn.cursor()
+    
+    sql = 'SELECT * FROM passwords'
+    c.execute(sql)
+
+    rows = c.fetchall()
+
+    print('ID | NAME | E-MAIL | USERNAME | PASSWORD | NOTES', end='\n\n')
+    
+    for row in rows:
+        for col in row:
+            print(f'{col}, ', end='')
+        print('')
 
 if __name__ == '__main__':
     init_tables()
@@ -74,7 +89,7 @@ if __name__ == '__main__':
     if arg == 'new':
         add_password()
     elif arg == 'list':
-        pass
+        print_passwords()
     elif arg == 'edit':
         pass
     else:
