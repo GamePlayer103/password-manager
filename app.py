@@ -3,6 +3,18 @@ import sqlite3
 
 DB_PATH = './passwords.db'
 
+def input_args(args):
+    data = []
+    for arg in args:
+        try:
+            input_data = input(arg + ': ')
+        except KeyboardInterrupt:
+            print('\npressed ctrl-c, aborting')
+            sys.exit()
+        data.append(input_data)
+
+    return data
+
 def print_help():
     msg = (
         'usage:\n'
@@ -43,22 +55,13 @@ def init_tables():
         print('error! cannot create database connection')
 
 def add_password():
-    try: 
-        name = input('name: ')
-        email = input('email: ')
-        username = input('username: ')
-        password = input('password: ')
-        notes = input('notes: ')
-    except KeyboardInterrupt:
-        print('\npressed ctrl-c, aborting')
-
-    data = (name, email, username, password, notes)
+    args = input_args(('name', 'email', 'username', 'password', 'notes'))
     sql = ''' INSERT INTO passwords(name, email, username, password, notes)
             VALUES(?,?,?,?,?)'''
         
     conn = create_connection(DB_PATH)
     c = conn.cursor()
-    c.execute(sql, data)
+    c.execute(sql, args)
     conn.commit()
 
 def print_passwords():
@@ -78,34 +81,27 @@ def print_passwords():
         print('')
 
 def edit_password():
-    try:
-        id = input('id: ')
-        new_pass = input('new password: ')
-    except KeyboardInterrupt:
-        print('\npressed ctrl-c, aborting')
-    
-    data = (new_pass, id)
+    args = input_args(('id', 'new password'))
+    order = [1, 0]
+    args = [args[i] for i in order]
+
     sql = ''' UPDATE passwords
             SET password = ?
             WHERE id = ? '''
 
     conn = create_connection(DB_PATH)
     c = conn.cursor()
-    c.execute(sql, data)
+    c.execute(sql, args)
     conn.commit()
 
 def delete_password():
-    try:
-        id = input('id: ')
-    except KeyboardInterrupt:
-        print('\npressed ctrl-c, aborting')
-    
-    data = (id)
+    args = input_args(('id',))
+
     sql = 'DELETE FROM passwords WHERE id = ?'
 
     conn = create_connection(DB_PATH)
     c = conn.cursor()
-    c.execute(sql, data)
+    c.execute(sql, args)
     conn.commit()
 
 if __name__ == '__main__':
