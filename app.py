@@ -94,6 +94,20 @@ def edit_password():
     c.execute(sql, data)
     conn.commit()
 
+def delete_password():
+    try:
+        id = input('id: ')
+    except KeyboardInterrupt:
+        print('\npressed ctrl-c, aborting')
+    
+    data = (id)
+    sql = 'DELETE FROM passwords WHERE id = ?'
+
+    conn = create_connection(DB_PATH)
+    c = conn.cursor()
+    c.execute(sql, data)
+    conn.commit()
+
 if __name__ == '__main__':
     init_tables()
 
@@ -109,5 +123,7 @@ if __name__ == '__main__':
         print_passwords()
     elif arg == 'edit':
         edit_password()
+    elif arg == 'delete':
+        delete_password()
     else:
         print_help()
